@@ -51,8 +51,15 @@ If the update to a task returns RUNNING, wait for the specified delay period the
 If, at any time during the update, a task returns FAILED, pause the update.
 
 
-* Drain node
-docker node update --availability drain worker1
+## Services
 
-* Make a drained node active again
-docker node update --availability active worker1
+Service Types:
+    - Replicated
+    - Global(daemonset in K8s)
+
+### Update services
+- Default: lockstep update. Update all tasks at same time
+- Configurations:
+    - Paralleism - how many updates can be performed at the same time.
+    - Delay - minimum delay between updates
+

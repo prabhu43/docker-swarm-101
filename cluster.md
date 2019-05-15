@@ -123,6 +123,31 @@ docker@worker3:~$ docker node demote worker2
 Error response from daemon: This node is not a swarm manager. Worker nodes can't be used to view or modify cluster state. Please run this command on a manager node or promote the current node to a manager.
 ```
 
+#### Ports required:
+- TCP port 2377 for cluster management communications
+- TCP and UDP port 7946 for communication among nodes
+- UDP port 4789 for overlay network traffic
+
+## Scheduling
+- Resource Awareness: SwarmKit is aware of resources available on nodes and will place tasks accordingly
+- Spread strategy: schedule tasks on the least loaded nodes, provided they meet the constraints and resource requirements
+- Contraints: Operators can limit the set of nodes where a task can be scheduled by defining constraint expressions
+
+## Node updates
+* Drain node
+docker node update --availability drain worker1
+
+* Pause node: stop receiving new tasks
+docker node update --availability pause worker1
+
+* Make a drained node active again
+docker node update --availability active worker1
+
+* Add labels
+docker node update --label-add foo --label-add bar=baz node-1
+
+* Remove labels
+
 * Demote a worker node to manager
 ```
 docker@manager1:~$ docker node promote worker1
@@ -135,27 +160,11 @@ docker@manager1:~$ docker node demote worker1
 Manager worker1 demoted in the swarm.
 ```
 
-#### Ports required:
-- TCP port 2377 for cluster management communications
-- TCP and UDP port 7946 for communication among nodes
-- UDP port 4789 for overlay network traffic
+* Leave swarm: execute from inside that node
+docker swarm leave
 
-## Scheduling
-- Resource Awareness: SwarmKit is aware of resources available on nodes and will place tasks accordingly
-- Spread strategy: schedule tasks on the least loaded nodes, provided they meet the constraints and resource requirements
-- Contraints: Operators can limit the set of nodes where a task can be scheduled by defining constraint expressions
-
-## Services
-
-Service Types:
-    - Replicated
-    - Global(daemonset in K8s)
-
-### Update services
-- Default: lockstep update. Update all tasks at same time
-- Configurations:
-    - Paralleism - how many updates can be performed at the same time.
-    - Delay - minimum delay between updates
+* Delete node
+docker node rm node-1
 
 
 ## References:
